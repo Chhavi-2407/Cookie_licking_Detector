@@ -1,0 +1,32 @@
+name: Cookie Licking Detector (CLD)
+on:
+  schedule:
+    # Runs daily at 00:00 UTC (Adjust time as needed [2])
+    - cron: '0 0 * * *' 
+  workflow_dispatch:
+    # Allows manual running for testing
+
+jobs:
+  run_cld_detection:
+    # Recommended OS for GitHub Actions [2]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: pip install PyGithub
+
+      - name: Execute Cookie Licking Detector
+        env:
+          # Securely passes the GitHub Token to the Python script
+          # ${{ github.token }} is automatically generated and has permission to modify issues [2]
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # The repository name is automatically provided by the action context
+          GITHUB_REPOSITORY: ${{ github.repository }} 
+        run: python detector.py
